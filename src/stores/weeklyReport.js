@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { ref, onValue } from 'firebase/database'
 import { database, firestore } from '@/firebase/init'
 import { collection, setDoc, doc } from 'firebase/firestore'
-
 import * as XLSX from 'xlsx'
 
 export const useWeeklyReportStore = defineStore('reports', {
@@ -17,10 +16,12 @@ export const useWeeklyReportStore = defineStore('reports', {
       onValue(studentsRef, async (snapshot) => {
         const data = snapshot.val()
         if (data) {
-          this.students = Object.keys(data).map(key => ({
-            id: key,
-            ...data[key],
-          }))
+          this.students = Object.keys(data)
+            .map(key => ({
+              id: key,
+              ...data[key],
+            }))
+            .filter(student => student.attendance === true ) // Filter only present students
 
           // Save to Firestore
           for (const student of this.students) {

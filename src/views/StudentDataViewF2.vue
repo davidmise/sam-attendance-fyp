@@ -6,7 +6,6 @@ import FooterSection from '@/components/FooterSection.vue'
 import { database } from '@/firebase/init'
 import { ref, onValue } from 'firebase/database'
 import { reactive, computed, onMounted } from 'vue'
-import { useWeeklyReportStore } from '@/stores/weeklyReport'
 
 // Defining a reactive state object to store students data
 const state = reactive({
@@ -35,8 +34,7 @@ const fetchStudents = () => {
   })
 }
 
-
-// Computed property to get Form 1 students
+// Computed property to get Form 2 students
 const formOneStudents = computed(() => state.students)
 
 // Fetch students data when the component is mounted
@@ -63,29 +61,9 @@ const countStatus = (status) => {
 const statusText = (status) => {
   console.log(status)
   return status === true ? 'Present' : 'Absent'
- 
 }
 </script>
 
-<script>
-export default {
-  setup() {
-    const { fetchStudents, getAllStudents, totalStudents, exportToSpreadsheet } = useWeeklyReportStore();
-
-    fetchStudents();
-
-    const exportData = () => {
-      exportToSpreadsheet();
-    };
-
-    return {
-      students: getAllStudents,
-      totalStudents,
-      exportData
-    };
-  },
-}
-</script>
 <template>
   <div class="wrapper">
     <!-- Sidebar component -->
@@ -99,7 +77,6 @@ export default {
         <div class="container-fluid p-0">
           <!-- Page Title -->
           <h1 class="h3 mb-3"><strong>Today's</strong> Attendance</h1>
-          <!-- <button @click="exportData" class="btn btn-secondary">Download Report</button> -->
 
           <div class="row">
             <div class="col-12 col-lg-12 col-xxl-12">
@@ -113,7 +90,7 @@ export default {
                     </div>
                     <div class="col">
                       <!-- Display class information -->
-                      <h5 class="card-title mb-0">Class: Form 2</h5>
+                      <h5 class="card-title mb-0">Class: Form 2 </h5>
                     </div>
                   </div>
                 </div>
@@ -124,7 +101,7 @@ export default {
                       <th>Student Name</th>
                       <th class="d-none d-xl-table-cell">Class</th>
                       <th class="d-none d-xl-table-cell">Status</th>
-                      <th>Time</th>
+                      <!-- <th>Time</th> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -137,7 +114,7 @@ export default {
                         <!-- Display status badge and text -->
                         <span :class="statusBadgeClass(student.status)">{{ statusText(student.status) }}</span>
                       </td>
-                      <td>{{ student.timestamp }}</td>
+                      <!-- <td>{{ student.timestamp }}</td> -->
                     </tr>
                   </tbody>
                 </table>
@@ -149,7 +126,7 @@ export default {
           <div class="mx-4">
             <div class="row">
               <div class="col-12 col-lg-12 col-xxl-12">
-                <div class="text-center pt-3"><h5>Summary</h5></div>
+                <div class="text-start pt-3"><h5>Summary</h5></div>
                 <div class="card border-0 bg-gray-400">
                   <div class="row">
                     <div class="col-4 pt-2 px-4">
@@ -164,7 +141,7 @@ export default {
                       <!-- Display number of absent students -->
                       <p>Absent: {{ countStatus(false) }}</p>
                     </div>
-                    <!--  -->
+                   
                   </div>
                 </div>
               </div>
@@ -181,3 +158,4 @@ export default {
 <style>
 /* Add any additional styling if needed */
 </style>
+ 

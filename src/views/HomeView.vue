@@ -81,9 +81,10 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import Sidebar from '@/components/NavBar/SideBar.vue'
 import TopBar from '@/components/NavBar/TopBar.vue'
-import { onMounted } from 'vue'
+import FooterSection from '@/components/FooterSection.vue'
 import { useSummaryStore } from '@/stores/counter'
 
 // Create an instance of the summary store
@@ -93,7 +94,6 @@ const summaryStore = useSummaryStore()
 onMounted(() => {
   summaryStore.fetchStudents()
 })
-
 
 </script>
 

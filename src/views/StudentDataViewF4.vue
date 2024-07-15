@@ -1,3 +1,69 @@
+<script setup>
+// Importing necessary components and functions
+import Sidebar from '@/components/NavBar/SideBar.vue'
+import TopBar from '@/components/NavBar/TopBar.vue'
+import FooterSection from '@/components/FooterSection.vue'
+import { database } from '@/firebase/init'
+import { ref, onValue } from 'firebase/database'
+import { reactive, computed, onMounted } from 'vue'
+
+// Defining a reactive state object to store students data
+const state = reactive({
+  students: []
+})
+
+// Function to fetch students data from Firebase
+const fetchStudents = () => {
+  const studentsRef = ref(database, 'student')
+  onValue(studentsRef, (snapshot) => {
+    const data = snapshot.val()
+    if (data) {
+      state.students = []
+      for (const key in data) {
+        if (data[key].Class === 'Form 4') {
+          state.students.push({
+            id: key,
+            name: data[key].name,
+            Class: data[key].Class,
+            status: data[key].attendance,
+            timestamp: data[key].entryTime || 'N/A'
+          })
+        }
+      }
+    }
+  })
+}
+
+// Computed property to get Form 4 students
+const formOneStudents = computed(() => state.students)
+
+// Fetch students data when the component is mounted
+onMounted(() => {
+  fetchStudents()
+})
+
+// Function to determine the CSS class for status badges based on attendance status
+const statusBadgeClass = (status) => {
+  return {
+    'badge bg-success': status === true,  // Green badge for 'Present'
+    'badge bg-danger': status === false,  // Red badge for 'Absent'
+  }
+}
+
+// Function to count the number of students with a specific status
+const countStatus = (status) => {
+  return formOneStudents.value
+    ? formOneStudents.value.filter((student) => student.status === status).length
+    : 0
+}
+
+// Function to convert status value to text
+const statusText = (status) => {
+  console.log(status)
+  return status === true ? 'Present' : 'Absent'
+}
+</script>
+
 <template>
   <div class="wrapper">
     <!-- Sidebar component -->
@@ -35,7 +101,7 @@
                       <th>Student Name</th>
                       <th class="d-none d-xl-table-cell">Class</th>
                       <th class="d-none d-xl-table-cell">Status</th>
-                      <th>Time</th>
+                      <!-- <th>Time</th> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -48,7 +114,7 @@
                         <!-- Display status badge and text -->
                         <span :class="statusBadgeClass(student.status)">{{ statusText(student.status) }}</span>
                       </td>
-                      <td>{{ student.timestamp }}</td>
+                      <!-- <td>{{ student.timestamp }}</td> -->
                     </tr>
                   </tbody>
                 </table>
@@ -75,6 +141,7 @@
                       <!-- Display number of absent students -->
                       <p>Absent: {{ countStatus(false) }}</p>
                     </div>
+                   
                   </div>
                 </div>
               </div>
@@ -82,91 +149,13 @@
           </div>
         </div>
       </main>
-
       <!-- FooterSection component -->
       <FooterSection />
     </div>
   </div>
 </template>
 
-<script>
-import Sidebar from '@/components/NavBar/SideBar.vue';
-import TopBar from '@/components/NavBar/TopBar.vue';
-import FooterSection from '@/components/FooterSection.vue';
-import { ref, onValue } from 'firebase/database';
-import { useAttendanceStore } from '@/stores/attendance';
-import { database } from '@/firebase/init'
-
-export default {
-  components: {
-    Sidebar,
-    TopBar,
-    FooterSection
-  },
-  data() {
-    return {
-      students: []
-    };
-  },
-  setup() {
-    const store = useAttendanceStore();
-
-    const handleScan = (studentId) => {
-      store.markAttendance(studentId);
-    };
-
-    return {
-      handleScan,
-    };
-  },
-  computed: {
-    formOneStudents() {
-      return this.students.filter(student => student.Class === 'Form 4');
-    }
-  },
-  methods: {
-    fetchStudents() {
-      const studentsRef = ref(database, 'student');
-      onValue(studentsRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          this.students = [];
-          for (const key in data) {
-            if (data[key].Class === 'Form 4') {
-              const attendanceInfo = data[key].attendance.info;
-              this.students.push({
-                id: key,
-                name: data[key].name,
-                Class: data[key].Class,
-                status: attendanceInfo.present,
-                timestamp: attendanceInfo.entryTime || 'N/A'
-              });
-            }
-          }
-        }
-      });
-    },
-    statusBadgeClass(status) {
-      return {
-        'badge bg-success': status === true,
-        'badge bg-danger': status === false,
-      };
-    },
-    countStatus(status) {
-      return this.formOneStudents.filter(student => student.status === status).length;
-    },
-    statusText(status) {
-      return status === true ? 'Present' : 'Absent';
-    },
-    
-  },
-
-  created() {
-    this.fetchStudents();
-  }
-};
-</script>
-
 <style>
 /* Add any additional styling if needed */
 </style>
+ 

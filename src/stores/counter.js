@@ -13,7 +13,7 @@ export const useSummaryStore = defineStore('summary', {
   getters: {
     getTotalStudents: (state) => state.totalStudents,
     getTotalPresent: (state) => state.totalPresent,
-    getTotalAbsent: (state) => state.totalAbsent,
+    getTotalAbsent: (state) => state.totalStudents - state.totalPresent,
   },
   actions: {
     fetchStudents() {

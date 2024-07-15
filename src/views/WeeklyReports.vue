@@ -6,7 +6,6 @@
       <main class="content">
         <div class="container-fluid p-0">
           <h1>Student Reports</h1>
-          <!-- <p>Total Students: {{ totalStudents }}</p> -->
           <button @click="exportData" class="btn btn-secondary">Download Report</button>
 
           <table class="table table-hover">
@@ -47,7 +46,7 @@ export default {
     FooterSection
   },
   setup() {
-    const { fetchStudents, getAllStudents, totalStudents, exportToSpreadsheet } = useWeeklyReportStore();
+    const { fetchStudents, getAllStudents, exportToSpreadsheet } = useWeeklyReportStore();
 
     fetchStudents();
 
@@ -57,7 +56,6 @@ export default {
 
     return {
       students: getAllStudents,
-      totalStudents,
       exportData
     };
   },

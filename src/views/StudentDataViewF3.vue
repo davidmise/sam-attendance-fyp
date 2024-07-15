@@ -34,7 +34,7 @@ const fetchStudents = () => {
   })
 }
 
-// Computed property to get Form 1 students
+// Computed property to get Form 3 students
 const formOneStudents = computed(() => state.students)
 
 // Fetch students data when the component is mounted
@@ -101,7 +101,7 @@ const statusText = (status) => {
                       <th>Student Name</th>
                       <th class="d-none d-xl-table-cell">Class</th>
                       <th class="d-none d-xl-table-cell">Status</th>
-                      <th>Time</th>
+                      <!-- <th>Time</th> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -114,7 +114,7 @@ const statusText = (status) => {
                         <!-- Display status badge and text -->
                         <span :class="statusBadgeClass(student.status)">{{ statusText(student.status) }}</span>
                       </td>
-                      <td>{{ student.timestamp }}</td>
+                      <!-- <td>{{ student.timestamp }}</td> -->
                     </tr>
                   </tbody>
                 </table>
@@ -158,3 +158,4 @@ const statusText = (status) => {
 <style>
 /* Add any additional styling if needed */
 </style>
+ 
